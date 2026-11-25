@@ -11,6 +11,14 @@ Validador em Next.js e Tailwind CSS para testar dados estruturados de páginas r
 
 **Testar exemplo** executa uma análise real sobre quatro rotas sintéticas servidas pelo próprio app.
 
+### Usar o painel publicado
+
+Após iniciar o validador na porta 3100, abra o [painel no GitHub Pages](https://lucas-amaral01.github.io/validador-local-schema-markup/). Digite a URL local e clique em **Validar página**. Se o navegador solicitar acesso à rede local, permita para conectar o painel ao validador da sua máquina. Use a cópia local do painel se o navegador bloquear a conexão.
+
+O painel publicado usa o mesmo código da interface local. A requisição de análise vai do seu navegador para o validador na porta 3100, que lê as páginas e o sitemap da sua máquina.
+
+`npm run build:pages` gera os arquivos do painel publicado em `out/`. A branch `gh-pages` hospeda essa compilação.
+
 ## O que é verificado
 
 - Sintaxe JSON, estruturas comuns de JSON-LD, tipos e nomes de propriedades do Schema.org.

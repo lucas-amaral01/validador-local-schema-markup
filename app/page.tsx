@@ -15,6 +15,8 @@ const preview = `{
   "url": "https://example.com"
 }`;
 const tokens = /("(?:\\.|[^"\\])*")|(\b(?:true|false|null)\b)|(-?\d+(?:\.\d+)?)/g;
+const hosted = process.env.NEXT_PUBLIC_GITHUB_PAGES === "1";
+const localOrigin = "http://127.0.0.1:3100";
 
 function Code({ source }: { source: string }) {
   return <pre className="code" tabIndex={0} aria-label="Código JSON-LD"><code>
@@ -85,7 +87,7 @@ export default function Home() {
     setReport(undefined);
     setEntityIndex(undefined);
     try {
-      const response = await fetch("/api/scan", {
+      const response = await fetch(hosted ? `${localOrigin}/api/scan` : "/api/scan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: target, children: crawlChildren }),
@@ -100,7 +102,9 @@ export default function Home() {
       setReport(data);
       if (fromDemo) requestAnimationFrame(() => resultsTitle.current?.focus());
     } catch {
-      setError("O validador perdeu a conexão. Tente analisar novamente.");
+      setError(hosted
+        ? "Inicie o validador local na porta 3100 e permita o acesso à rede local no navegador. Depois, tente novamente."
+        : "O validador perdeu a conexão. Tente analisar novamente.");
     } finally {
       setBusy(false);
     }
@@ -112,7 +116,7 @@ export default function Home() {
   }
 
   function demo() {
-    const target = window.location.origin + "/exemplo";
+    const target = (hosted ? localOrigin : window.location.origin) + "/exemplo";
     setUrl(target);
     setChildren(true);
     void run(target, true, true);
@@ -150,6 +154,7 @@ export default function Home() {
       <section className="intro" aria-labelledby="title">
         <h1 id="title">Validador de Schema Markup</h1>
         <p>Confira os dados estruturados do seu site antes de publicar.</p>
+        {hosted && <p>Inicie o validador na porta 3100 para acessar as páginas da sua máquina. <a className="underline underline-offset-2" href="https://github.com/lucas-amaral01/validador-local-schema-markup#como-usar">Como conectar</a></p>}
       </section>
 
       <form className="scan-form" onSubmit={submit} noValidate>
